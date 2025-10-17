@@ -1,10 +1,10 @@
 """Layout-aware chunker for structured documents (PDF, HTML)."""
 
-from typing import List, Optional, Dict, Any
 import logging
+from typing import Any
 
 from .base import BaseChunker, TokenCounter
-from .types import Chunk, ChunkerConfig, DocumentMetadata, ChunkType
+from .types import Chunk, ChunkType, ChunkerConfig, DocumentMetadata
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +16,7 @@ class LayoutAwareChunker(BaseChunker):
     tables, lists) and creates chunks that respect document structure.
     """
 
-    def __init__(self, config: Optional[ChunkerConfig] = None):
+    def __init__(self, config: ChunkerConfig | None = None):
         """Initialize layout-aware chunker.
 
         Args:
@@ -29,7 +29,7 @@ class LayoutAwareChunker(BaseChunker):
     def _check_unstructured(self) -> None:
         """Check if unstructured library is available."""
         try:
-            import unstructured
+            import unstructured  # noqa: F401
             self.has_unstructured = True
         except ImportError:
             logger.warning(
@@ -38,7 +38,7 @@ class LayoutAwareChunker(BaseChunker):
             )
             self.has_unstructured = False
 
-    def _extract_elements_from_file(self, file_path: str) -> List[Dict[str, Any]]:
+    def _extract_elements_from_file(self, file_path: str) -> list[dict[str, Any]]:
         """Extract elements from file using unstructured.
 
         Args:
@@ -63,7 +63,7 @@ class LayoutAwareChunker(BaseChunker):
             logger.error(f"Error extracting elements from {file_path}: {e}")
             return []
 
-    def _extract_elements_from_html(self, html: str) -> List[Dict[str, Any]]:
+    def _extract_elements_from_html(self, html: str) -> list[dict[str, Any]]:
         """Extract elements from HTML string.
 
         Args:
@@ -74,7 +74,6 @@ class LayoutAwareChunker(BaseChunker):
         """
         try:
             from unstructured.partition.html import partition_html
-            from io import StringIO
 
             elements = partition_html(text=html)
             return [
@@ -91,8 +90,8 @@ class LayoutAwareChunker(BaseChunker):
 
     def _group_elements(
         self,
-        elements: List[Dict[str, Any]]
-    ) -> List[List[Dict[str, Any]]]:
+        elements: list[dict[str, Any]]
+    ) -> list[list[dict[str, Any]]]:
         """Group elements into logical chunks.
 
         Args:
@@ -104,7 +103,6 @@ class LayoutAwareChunker(BaseChunker):
         groups = []
         current_group = []
         current_tokens = 0
-        current_section = None
 
         for elem in elements:
             elem_type = elem.get("type", "text")
@@ -118,7 +116,6 @@ class LayoutAwareChunker(BaseChunker):
                     groups.append(current_group)
                 current_group = [elem]
                 current_tokens = elem_tokens
-                current_section = elem_text
                 continue
 
             # Tables and figures get their own group if large
@@ -156,9 +153,9 @@ class LayoutAwareChunker(BaseChunker):
 
     def _create_chunk_from_group(
         self,
-        group: List[Dict[str, Any]],
+        group: list[dict[str, Any]],
         start_pos: int,
-        metadata: Optional[DocumentMetadata]
+        metadata: DocumentMetadata | None
     ) -> Chunk:
         """Create a chunk from a group of elements.
 
@@ -205,8 +202,8 @@ class LayoutAwareChunker(BaseChunker):
     def chunk_file(
         self,
         file_path: str,
-        metadata: Optional[DocumentMetadata] = None
-    ) -> List[Chunk]:
+        metadata: DocumentMetadata | None = None
+    ) -> list[Chunk]:
         """Chunk a file while preserving layout.
 
         Args:
@@ -243,8 +240,8 @@ class LayoutAwareChunker(BaseChunker):
     def chunk_html(
         self,
         html: str,
-        metadata: Optional[DocumentMetadata] = None
-    ) -> List[Chunk]:
+        metadata: DocumentMetadata | None = None
+    ) -> list[Chunk]:
         """Chunk HTML while preserving structure.
 
         Args:
@@ -280,8 +277,8 @@ class LayoutAwareChunker(BaseChunker):
     def chunk(
         self,
         text: str,
-        metadata: Optional[DocumentMetadata] = None
-    ) -> List[Chunk]:
+        metadata: DocumentMetadata | None = None
+    ) -> list[Chunk]:
         """Chunk text (fallback for non-structured content).
 
         Args:

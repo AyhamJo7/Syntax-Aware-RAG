@@ -1,10 +1,7 @@
 """Recursive character splitter with multiple fallback separators."""
 
-from typing import List, Optional
-import re
-
 from .base import BaseChunker, TokenCounter
-from .types import Chunk, ChunkerConfig, DocumentMetadata, ChunkType
+from .types import Chunk, ChunkType, ChunkerConfig, DocumentMetadata
 
 
 class RecursiveCharacterChunker(BaseChunker):
@@ -30,8 +27,8 @@ class RecursiveCharacterChunker(BaseChunker):
 
     def __init__(
         self,
-        config: Optional[ChunkerConfig] = None,
-        separators: Optional[List[str]] = None
+        config: ChunkerConfig | None = None,
+        separators: list[str] | None = None
     ):
         """Initialize recursive chunker.
 
@@ -43,7 +40,7 @@ class RecursiveCharacterChunker(BaseChunker):
         self.separators = separators or self.DEFAULT_SEPARATORS
         self.token_counter = TokenCounter()
 
-    def _split_text(self, text: str, separator: str) -> List[str]:
+    def _split_text(self, text: str, separator: str) -> list[str]:
         """Split text by separator.
 
         Args:
@@ -61,7 +58,7 @@ class RecursiveCharacterChunker(BaseChunker):
             parts = text.split(separator)
             # Keep separator with parts (except last)
             result = []
-            for i, part in enumerate(parts[:-1]):
+            for part in parts[:-1]:
                 result.append(part + separator)
             if parts[-1]:
                 result.append(parts[-1])
@@ -71,9 +68,9 @@ class RecursiveCharacterChunker(BaseChunker):
 
     def _merge_splits(
         self,
-        splits: List[str],
+        splits: list[str],
         separator: str
-    ) -> List[str]:
+    ) -> list[str]:
         """Merge splits into chunks respecting token limits.
 
         Args:
@@ -138,8 +135,8 @@ class RecursiveCharacterChunker(BaseChunker):
     def _recursive_split(
         self,
         text: str,
-        separators: List[str]
-    ) -> List[str]:
+        separators: list[str]
+    ) -> list[str]:
         """Recursively split text using separator hierarchy.
 
         Args:
@@ -183,8 +180,8 @@ class RecursiveCharacterChunker(BaseChunker):
     def chunk(
         self,
         text: str,
-        metadata: Optional[DocumentMetadata] = None
-    ) -> List[Chunk]:
+        metadata: DocumentMetadata | None = None
+    ) -> list[Chunk]:
         """Split text into chunks using recursive splitting.
 
         Args:

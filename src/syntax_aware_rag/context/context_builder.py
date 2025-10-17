@@ -1,8 +1,8 @@
 """Context builder for managing token budgets and diversity."""
 
-from typing import List, Dict, Any, Optional
-from dataclasses import dataclass
 import logging
+from dataclasses import dataclass
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +26,7 @@ class ContextConfig:
 class ContextBuilder:
     """Builds context from retrieval results with budget management."""
 
-    def __init__(self, config: Optional[ContextConfig] = None):
+    def __init__(self, config: ContextConfig | None = None):
         """Initialize context builder.
 
         Args:
@@ -48,8 +48,8 @@ class ContextBuilder:
 
     def build_context(
         self,
-        results: List[Dict[str, Any]],
-        query: Optional[str] = None
+        results: list[dict[str, Any]],
+        query: str | None = None
     ) -> str:
         """Build context string from retrieval results.
 
@@ -113,8 +113,8 @@ class ContextBuilder:
 
     def build_context_with_diversity(
         self,
-        results: List[Dict[str, Any]],
-        query: Optional[str] = None
+        results: list[dict[str, Any]],
+        query: str | None = None
     ) -> str:
         """Build context with diversity optimization.
 
@@ -135,7 +135,7 @@ class ContextBuilder:
             # Check similarity with previous (naive: compare first 100 chars)
             if prev_text:
                 overlap = sum(
-                    a == b for a, b in zip(text[:100], prev_text[:100])
+                    a == b for a, b in zip(text[:100], prev_text[:100], strict=False)
                 ) / 100
 
                 if overlap > (1 - self.config.diversity_penalty):

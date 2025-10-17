@@ -1,9 +1,8 @@
 """Base chunker interface and utilities."""
 
-from abc import ABC, abstractmethod
-from typing import List, Optional
-import unicodedata
 import re
+import unicodedata
+from abc import ABC, abstractmethod
 
 from .types import Chunk, ChunkerConfig, DocumentMetadata
 
@@ -15,7 +14,7 @@ class BaseChunker(ABC):
     and maintaining metadata about the chunk positions.
     """
 
-    def __init__(self, config: Optional[ChunkerConfig] = None):
+    def __init__(self, config: ChunkerConfig | None = None):
         """Initialize the chunker.
 
         Args:
@@ -27,8 +26,8 @@ class BaseChunker(ABC):
     def chunk(
         self,
         text: str,
-        metadata: Optional[DocumentMetadata] = None
-    ) -> List[Chunk]:
+        metadata: DocumentMetadata | None = None
+    ) -> list[Chunk]:
         """Split text into chunks.
 
         Args:
@@ -91,7 +90,7 @@ class BaseChunker(ABC):
         text: str,
         start: int,
         end: int,
-        metadata: Optional[DocumentMetadata] = None,
+        metadata: DocumentMetadata | None = None,
         **kwargs
     ) -> Chunk:
         """Create a chunk with metadata.

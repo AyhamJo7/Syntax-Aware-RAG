@@ -1,13 +1,14 @@
 """FAISS-based vector index for hierarchical retrieval."""
 
-from typing import List, Optional, Dict, Any, Tuple
 import logging
 import pickle
 from pathlib import Path
+from typing import Any
+
 import numpy as np
 import numpy.typing as npt
 
-from ..embedding.types import DocumentTree, DocumentNode, NodeLevel
+from ..embedding.types import DocumentNode, DocumentTree, NodeLevel
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +18,7 @@ class FAISSIndex:
 
     def __init__(
         self,
-        dimension: Optional[int] = None,
+        dimension: int | None = None,
         metric: str = "cosine",
         use_gpu: bool = False
     ):
@@ -32,9 +33,9 @@ class FAISSIndex:
         self.metric = metric
         self.use_gpu = use_gpu
         self._index = None
-        self._metadata: List[Dict[str, Any]] = []
-        self._node_map: Dict[int, str] = {}  # index_id -> node_id
-        self._doc_trees: Dict[str, DocumentTree] = {}  # doc_id -> tree
+        self._metadata: list[dict[str, Any]] = []
+        self._node_map: dict[int, str] = {}  # index_id -> node_id
+        self._doc_trees: dict[str, DocumentTree] = {}  # doc_id -> tree
 
     @property
     def index(self):
@@ -47,8 +48,8 @@ class FAISSIndex:
         """Initialize the FAISS index."""
         try:
             import faiss
-        except ImportError:
-            raise RuntimeError("faiss required. Install with: pip install faiss-cpu")
+        except ImportError as err:
+            raise RuntimeError("faiss required. Install with: pip install faiss-cpu") from err
 
         if self.metric == "cosine":
             # Normalize vectors and use inner product
@@ -83,7 +84,7 @@ class FAISSIndex:
         norms[norms == 0] = 1  # Avoid division by zero
         return vectors / norms
 
-    def add_documents(self, trees: List[DocumentTree]) -> None:
+    def add_documents(self, trees: list[DocumentTree]) -> None:
         """Add document trees to the index.
 
         Args:
@@ -158,8 +159,8 @@ class FAISSIndex:
         self,
         query_embedding: npt.NDArray[np.float32],
         top_k: int = 10,
-        level_filter: Optional[NodeLevel] = None
-    ) -> List[Tuple[float, Dict[str, Any]]]:
+        level_filter: NodeLevel | None = None
+    ) -> list[tuple[float, dict[str, Any]]]:
         """Search the index.
 
         Args:
@@ -186,7 +187,7 @@ class FAISSIndex:
 
         # Collect results
         results = []
-        for score, idx in zip(scores[0], indices[0]):
+        for score, idx in zip(scores[0], indices[0], strict=False):
             if idx < 0 or idx >= len(self._metadata):
                 continue
 
@@ -203,7 +204,7 @@ class FAISSIndex:
 
         return results
 
-    def get_node(self, doc_id: str, node_id: str) -> Optional[DocumentNode]:
+    def get_node(self, doc_id: str, node_id: str) -> DocumentNode | None:
         """Retrieve a specific node.
 
         Args:
@@ -218,7 +219,7 @@ class FAISSIndex:
             return tree.get_node(node_id)
         return None
 
-    def get_tree(self, doc_id: str) -> Optional[DocumentTree]:
+    def get_tree(self, doc_id: str) -> DocumentTree | None:
         """Retrieve a document tree.
 
         Args:

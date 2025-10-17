@@ -1,16 +1,16 @@
 """Command-line interface for Syntax-Aware-RAG."""
 
-import click
 import logging
-from pathlib import Path
-from typing import Optional
 import sys
+from pathlib import Path
 
-from ..chunking import SentenceChunker, RecursiveCharacterChunker, ChunkerConfig, DocumentMetadata
+import click
+
+from ..chunking import ChunkerConfig, DocumentMetadata, RecursiveCharacterChunker, SentenceChunker
+from ..context import ContextBuilder
 from ..embedding import HierarchicalEmbedder
 from ..index import FAISSIndex
 from ..retrieve import MultiGranularityRetriever
-from ..context import ContextBuilder
 
 logging.basicConfig(
     level=logging.INFO,
@@ -60,7 +60,7 @@ def index(input: str, output: str, chunker: str, max_tokens: int, model: str):
         for file_path in files:
             logger.info(f"Processing {file_path.name}...")
             try:
-                with open(file_path, 'r', encoding='utf-8') as f:
+                with open(file_path, encoding='utf-8') as f:
                     text = f.read()
 
                 metadata = DocumentMetadata(
@@ -192,7 +192,7 @@ def ingest(input: str, chunker: str, max_tokens: int):
             chunker_obj = RecursiveCharacterChunker(config)
 
         # Read and chunk
-        with open(input, 'r', encoding='utf-8') as f:
+        with open(input, encoding='utf-8') as f:
             text = f.read()
 
         chunks = chunker_obj.chunk(text)

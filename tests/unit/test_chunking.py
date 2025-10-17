@@ -1,13 +1,14 @@
 """Unit tests for chunking components."""
 
 import pytest
+
 from syntax_aware_rag.chunking import (
     Chunk,
     ChunkType,
     ChunkerConfig,
-    SentenceChunker,
-    RecursiveCharacterChunker,
     DocumentMetadata,
+    RecursiveCharacterChunker,
+    SentenceChunker,
 )
 
 

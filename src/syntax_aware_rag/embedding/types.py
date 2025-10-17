@@ -1,8 +1,9 @@
 """Type definitions for embedding components."""
 
 from dataclasses import dataclass, field
-from typing import List, Optional, Dict, Any
 from enum import Enum
+from typing import Any
+
 import numpy as np
 import numpy.typing as npt
 
@@ -33,10 +34,10 @@ class DocumentNode:
     node_id: str
     text: str
     level: NodeLevel
-    embedding: Optional[npt.NDArray[np.float32]] = None
-    children: List[str] = field(default_factory=list)
-    parent_id: Optional[str] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    embedding: npt.NDArray[np.float32] | None = None
+    children: list[str] = field(default_factory=list)
+    parent_id: str | None = None
+    metadata: dict[str, Any] = field(default_factory=dict)
     start: int = 0
     end: int = 0
 
@@ -49,7 +50,7 @@ class DocumentNode:
         """Check if node has an embedding."""
         return self.embedding is not None
 
-    def to_dict(self, include_embedding: bool = False) -> Dict[str, Any]:
+    def to_dict(self, include_embedding: bool = False) -> dict[str, Any]:
         """Convert node to dictionary.
 
         Args:
@@ -85,8 +86,8 @@ class DocumentTree:
     """
     doc_id: str
     root_id: str
-    nodes: Dict[str, DocumentNode] = field(default_factory=dict)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    nodes: dict[str, DocumentNode] = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
 
     def add_node(self, node: DocumentNode) -> None:
         """Add a node to the tree.
@@ -96,7 +97,7 @@ class DocumentTree:
         """
         self.nodes[node.node_id] = node
 
-    def get_node(self, node_id: str) -> Optional[DocumentNode]:
+    def get_node(self, node_id: str) -> DocumentNode | None:
         """Get a node by ID.
 
         Args:
@@ -107,11 +108,11 @@ class DocumentTree:
         """
         return self.nodes.get(node_id)
 
-    def get_root(self) -> Optional[DocumentNode]:
+    def get_root(self) -> DocumentNode | None:
         """Get the root node."""
         return self.get_node(self.root_id)
 
-    def get_children(self, node_id: str) -> List[DocumentNode]:
+    def get_children(self, node_id: str) -> list[DocumentNode]:
         """Get all children of a node.
 
         Args:
@@ -125,7 +126,7 @@ class DocumentTree:
             return []
         return [self.nodes[child_id] for child_id in node.children if child_id in self.nodes]
 
-    def get_nodes_by_level(self, level: NodeLevel) -> List[DocumentNode]:
+    def get_nodes_by_level(self, level: NodeLevel) -> list[DocumentNode]:
         """Get all nodes at a specific level.
 
         Args:
@@ -138,8 +139,8 @@ class DocumentTree:
 
     def traverse_dfs(
         self,
-        start_node_id: Optional[str] = None
-    ) -> List[DocumentNode]:
+        start_node_id: str | None = None
+    ) -> list[DocumentNode]:
         """Depth-first traversal of the tree.
 
         Args:
@@ -158,7 +159,7 @@ class DocumentTree:
             result.extend(self.traverse_dfs(child_id))
         return result
 
-    def to_dict(self, include_embeddings: bool = False) -> Dict[str, Any]:
+    def to_dict(self, include_embeddings: bool = False) -> dict[str, Any]:
         """Convert tree to dictionary.
 
         Args:

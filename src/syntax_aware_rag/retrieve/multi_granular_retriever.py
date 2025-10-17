@@ -1,8 +1,9 @@
 """Multi-granularity retriever with two-stage search."""
 
-from typing import List, Optional, Dict, Any
-from dataclasses import dataclass
 import logging
+from dataclasses import dataclass
+from typing import Any
+
 import numpy as np
 
 from ..embedding.hierarchical_embedder import HierarchicalEmbedder
@@ -29,7 +30,7 @@ class RetrievalResult:
     doc_id: str
     node_id: str
     level: str
-    metadata: Dict[str, Any]
+    metadata: dict[str, Any]
 
 
 class MultiGranularityRetriever:
@@ -61,9 +62,9 @@ class MultiGranularityRetriever:
     def retrieve(
         self,
         query: str,
-        top_k: Optional[int] = None,
-        level_filter: Optional[NodeLevel] = None
-    ) -> List[RetrievalResult]:
+        top_k: int | None = None,
+        level_filter: NodeLevel | None = None
+    ) -> list[RetrievalResult]:
         """Retrieve relevant passages for query.
 
         Args:
@@ -93,7 +94,7 @@ class MultiGranularityRetriever:
         query_embedding: np.ndarray,
         top_k: int,
         level: NodeLevel
-    ) -> List[RetrievalResult]:
+    ) -> list[RetrievalResult]:
         """Single-stage search at specific level.
 
         Args:
@@ -126,7 +127,7 @@ class MultiGranularityRetriever:
         self,
         query_embedding: np.ndarray,
         final_top_k: int
-    ) -> List[RetrievalResult]:
+    ) -> list[RetrievalResult]:
         """Two-stage hierarchical search.
 
         Stage A: Broad search at paragraph/section level
@@ -206,7 +207,7 @@ class MultiGranularityRetriever:
         query: str,
         top_k: int = 5,
         include_parent: bool = True
-    ) -> List[Dict[str, Any]]:
+    ) -> list[dict[str, Any]]:
         """Retrieve passages with parent context.
 
         Args:

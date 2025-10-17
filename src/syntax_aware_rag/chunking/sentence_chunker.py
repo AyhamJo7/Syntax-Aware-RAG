@@ -1,10 +1,9 @@
 """Sentence-based chunker using spaCy."""
 
-from typing import List, Optional
 import logging
 
 from .base import BaseChunker, TokenCounter
-from .types import Chunk, ChunkerConfig, DocumentMetadata, ChunkType
+from .types import Chunk, ChunkType, ChunkerConfig, DocumentMetadata
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +17,7 @@ class SentenceChunker(BaseChunker):
 
     def __init__(
         self,
-        config: Optional[ChunkerConfig] = None,
+        config: ChunkerConfig | None = None,
         use_spacy: bool = True
     ):
         """Initialize sentence chunker.
@@ -56,7 +55,7 @@ class SentenceChunker(BaseChunker):
                 self.use_spacy = False
         return self._nlp
 
-    def _split_sentences_spacy(self, text: str) -> List[tuple[str, int, int]]:
+    def _split_sentences_spacy(self, text: str) -> list[tuple[str, int, int]]:
         """Split text into sentences using spaCy.
 
         Args:
@@ -71,7 +70,7 @@ class SentenceChunker(BaseChunker):
             sentences.append((sent.text, sent.start_char, sent.end_char))
         return sentences
 
-    def _split_sentences_nltk(self, text: str) -> List[tuple[str, int, int]]:
+    def _split_sentences_nltk(self, text: str) -> list[tuple[str, int, int]]:
         """Split text into sentences using NLTK.
 
         Args:
@@ -104,11 +103,11 @@ class SentenceChunker(BaseChunker):
 
             return sentences
 
-        except ImportError:
+        except ImportError as err:
             logger.error("Neither spaCy nor NLTK available for sentence splitting")
-            raise RuntimeError("No sentence splitter available")
+            raise RuntimeError("No sentence splitter available") from err
 
-    def _split_sentences(self, text: str) -> List[tuple[str, int, int]]:
+    def _split_sentences(self, text: str) -> list[tuple[str, int, int]]:
         """Split text into sentences.
 
         Args:
@@ -125,8 +124,8 @@ class SentenceChunker(BaseChunker):
     def chunk(
         self,
         text: str,
-        metadata: Optional[DocumentMetadata] = None
-    ) -> List[Chunk]:
+        metadata: DocumentMetadata | None = None
+    ) -> list[Chunk]:
         """Split text into sentence-based chunks.
 
         Args:

@@ -1,8 +1,9 @@
 """Hierarchical embedder for creating document trees with embeddings."""
 
-from typing import List, Optional, Dict, Any
-import logging
 import hashlib
+import logging
+from typing import Any
+
 import numpy as np
 
 from ..chunking.types import Chunk, ChunkType
@@ -40,11 +41,11 @@ class HierarchicalEmbedder:
                 from sentence_transformers import SentenceTransformer
                 self._model = SentenceTransformer(self.model_name, device=self.device)
                 logger.info(f"Loaded embedding model: {self.model_name}")
-            except ImportError:
+            except ImportError as err:
                 raise RuntimeError(
                     "sentence-transformers required. Install with: "
                     "pip install sentence-transformers"
-                )
+                ) from err
         return self._model
 
     @property
@@ -52,7 +53,7 @@ class HierarchicalEmbedder:
         """Get the embedding dimension."""
         return self.model.get_sentence_embedding_dimension()
 
-    def encode(self, texts: List[str]) -> np.ndarray:
+    def encode(self, texts: list[str]) -> np.ndarray:
         """Encode texts to embeddings.
 
         Args:
@@ -104,9 +105,9 @@ class HierarchicalEmbedder:
 
     def build_tree_from_chunks(
         self,
-        chunks: List[Chunk],
+        chunks: list[Chunk],
         doc_id: str,
-        metadata: Optional[Dict[str, Any]] = None
+        metadata: dict[str, Any] | None = None
     ) -> DocumentTree:
         """Build hierarchical tree from flat list of chunks.
 
@@ -197,7 +198,7 @@ class HierarchicalEmbedder:
         embeddings = self.encode(texts)
 
         # Assign embeddings
-        for node, embedding in zip(nodes_to_embed, embeddings):
+        for node, embedding in zip(nodes_to_embed, embeddings, strict=True):
             node.embedding = embedding.astype(np.float32)
 
         logger.info(f"Embedded {len(nodes_to_embed)} nodes")
@@ -205,9 +206,9 @@ class HierarchicalEmbedder:
 
     def build_hierarchy(
         self,
-        chunks: List[Chunk],
-        doc_id: Optional[str] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        chunks: list[Chunk],
+        doc_id: str | None = None,
+        metadata: dict[str, Any] | None = None,
         embed: bool = True
     ) -> DocumentTree:
         """Build complete hierarchical tree with embeddings.
@@ -267,7 +268,7 @@ class HierarchicalEmbedder:
         if modified_nodes:
             texts = [node.text for node in modified_nodes]
             embeddings = self.encode(texts)
-            for node, embedding in zip(modified_nodes, embeddings):
+            for node, embedding in zip(modified_nodes, embeddings, strict=True):
                 node.embedding = embedding.astype(np.float32)
 
         return tree

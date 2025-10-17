@@ -1,8 +1,8 @@
 """Type definitions for chunking components."""
 
 from dataclasses import dataclass, field
-from typing import Optional, Dict, Any, List
 from enum import Enum
+from typing import Any
 
 
 class ChunkType(Enum):
@@ -30,9 +30,9 @@ class Chunk:
     start: int
     end: int
     chunk_type: ChunkType = ChunkType.PARAGRAPH
-    metadata: Dict[str, Any] = field(default_factory=dict)
-    parent_id: Optional[str] = None
-    chunk_id: Optional[str] = None
+    metadata: dict[str, Any] = field(default_factory=dict)
+    parent_id: str | None = None
+    chunk_id: str | None = None
 
     def __post_init__(self) -> None:
         """Generate chunk_id if not provided."""
@@ -46,7 +46,7 @@ class Chunk:
         """Return the length of the chunk text."""
         return len(self.text)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert chunk to dictionary."""
         return {
             "text": self.text,
@@ -59,7 +59,7 @@ class Chunk:
         }
 
     @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "Chunk":
+    def from_dict(cls, data: dict[str, Any]) -> "Chunk":
         """Create chunk from dictionary."""
         data = data.copy()
         if "chunk_type" in data and isinstance(data["chunk_type"], str):
@@ -81,7 +81,7 @@ class ChunkerConfig:
         normalize_unicode: Whether to normalize unicode characters
     """
     max_tokens: int = 512
-    max_chars: Optional[int] = None
+    max_chars: int | None = None
     overlap: int = 50
     language: str = "en"
     preserve_sentences: bool = True
@@ -111,15 +111,15 @@ class DocumentMetadata:
         extra: Additional metadata
     """
     doc_id: str
-    source: Optional[str] = None
-    title: Optional[str] = None
-    author: Optional[str] = None
-    date: Optional[str] = None
-    page: Optional[int] = None
-    section: Optional[str] = None
-    extra: Dict[str, Any] = field(default_factory=dict)
+    source: str | None = None
+    title: str | None = None
+    author: str | None = None
+    date: str | None = None
+    page: int | None = None
+    section: str | None = None
+    extra: dict[str, Any] = field(default_factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary."""
         return {
             "doc_id": self.doc_id,
