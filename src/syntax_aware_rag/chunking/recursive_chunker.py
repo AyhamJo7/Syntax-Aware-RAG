@@ -1,7 +1,7 @@
 """Recursive character splitter with multiple fallback separators."""
 
 from .base import BaseChunker, TokenCounter
-from .types import Chunk, ChunkType, ChunkerConfig, DocumentMetadata
+from .types import Chunk, ChunkerConfig, ChunkType, DocumentMetadata
 
 
 class RecursiveCharacterChunker(BaseChunker):

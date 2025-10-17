@@ -4,8 +4,8 @@ import pytest
 
 from syntax_aware_rag.chunking import (
     Chunk,
-    ChunkType,
     ChunkerConfig,
+    ChunkType,
     DocumentMetadata,
     RecursiveCharacterChunker,
     SentenceChunker,

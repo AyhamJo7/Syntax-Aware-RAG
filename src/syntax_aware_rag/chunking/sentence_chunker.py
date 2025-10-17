@@ -3,7 +3,7 @@
 import logging
 
 from .base import BaseChunker, TokenCounter
-from .types import Chunk, ChunkType, ChunkerConfig, DocumentMetadata
+from .types import Chunk, ChunkerConfig, ChunkType, DocumentMetadata
 
 logger = logging.getLogger(__name__)
 
