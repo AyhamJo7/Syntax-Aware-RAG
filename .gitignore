@@ -1,0 +1,90 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# Data files (large files ignored)
+data/*.pdf
+data/*.txt
+data/*.html
+data/*.json
+data/*.csv
+data/*.parquet
+!data/.gitkeep
+
+# Index and model artifacts
+*.faiss
+*.index
+*.pkl
+*.bin
+*.pt
+*.pth
+indexes/
+models/
+
+# Logs
+*.log
+logs/
+
+# Environment
+.env
+.env.local
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Documentation builds
+docs/_build/
+docs/.doctrees/
+
+# Benchmarks output (keep structure, ignore large results)
+benchmarks/results/*.json
+benchmarks/results/*.png
+benchmarks/results/*.csv
+!benchmarks/results/.gitkeep
+
+# UV/Poetry
+.venv/
+poetry.lock
+uv.lock
