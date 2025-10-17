@@ -51,7 +51,8 @@ class HierarchicalEmbedder:
     @property
     def embedding_dim(self) -> int:
         """Get the embedding dimension."""
-        return self.model.get_sentence_embedding_dimension()
+        dim: int = self.model.get_sentence_embedding_dimension()
+        return dim
 
     def encode(self, texts: list[str]) -> np.ndarray:
         """Encode texts to embeddings.
@@ -65,7 +66,7 @@ class HierarchicalEmbedder:
         if not texts:
             return np.array([])
 
-        embeddings = self.model.encode(
+        embeddings: np.ndarray = self.model.encode(
             texts,
             batch_size=self.batch_size,
             show_progress_bar=False,

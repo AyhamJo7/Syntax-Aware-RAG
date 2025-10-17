@@ -156,7 +156,7 @@ class SentenceChunker(BaseChunker):
         for sent_text, sent_start, sent_end in sentences:
             sent_tokens = self.token_counter.count_tokens(sent_text)
 
-            # If single sentence exceeds max, split it
+            # If single sentence exceeds max, split it into multiple chunks
             if sent_tokens > self.config.max_tokens:
                 # Flush current chunk if any
                 if current_sentences:
@@ -173,19 +173,46 @@ class SentenceChunker(BaseChunker):
                     current_sentences = []
                     current_tokens = 0
 
-                # Split long sentence by characters
-                chunk_text = self.token_counter.truncate_to_tokens(
-                    sent_text, self.config.max_tokens
-                )
-                chunks.append(
-                    self.create_chunk(
-                        text=chunk_text,
-                        start=sent_start,
-                        end=sent_end,
-                        metadata=metadata,
-                        chunk_type=ChunkType.SENTENCE
+                # Split long sentence into multiple chunks
+                words = sent_text.split()
+                current_chunk_words: list[str] = []
+                current_chunk_tokens = 0
+                word_start = sent_start
+
+                for word in words:
+                    word_tokens = self.token_counter.count_tokens(word)
+                    if current_chunk_tokens + word_tokens > self.config.max_tokens and current_chunk_words:
+                        # Create chunk from accumulated words
+                        chunk_text = " ".join(current_chunk_words)
+                        chunks.append(
+                            self.create_chunk(
+                                text=chunk_text,
+                                start=word_start,
+                                end=word_start + len(chunk_text),
+                                metadata=metadata,
+                                chunk_type=ChunkType.SENTENCE
+                            )
+                        )
+                        word_start += len(chunk_text) + 1  # +1 for space
+                        current_chunk_words = []
+                        current_chunk_tokens = 0
+
+                    current_chunk_words.append(word)
+                    current_chunk_tokens += word_tokens
+
+                # Add remaining words
+                if current_chunk_words:
+                    chunk_text = " ".join(current_chunk_words)
+                    chunks.append(
+                        self.create_chunk(
+                            text=chunk_text,
+                            start=word_start,
+                            end=sent_end,
+                            metadata=metadata,
+                            chunk_type=ChunkType.SENTENCE
+                        )
                     )
-                )
+
                 chunk_start = sent_end
                 continue
 

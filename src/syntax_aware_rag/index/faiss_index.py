@@ -82,7 +82,8 @@ class FAISSIndex:
         """
         norms = np.linalg.norm(vectors, axis=1, keepdims=True)
         norms[norms == 0] = 1  # Avoid division by zero
-        return vectors / norms
+        result: npt.NDArray[np.float32] = vectors / norms
+        return result
 
     def add_documents(self, trees: list[DocumentTree]) -> None:
         """Add document trees to the index.

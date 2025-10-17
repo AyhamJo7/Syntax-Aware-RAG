@@ -125,12 +125,13 @@ class TokenCounter:
         Args:
             tokenizer_name: Name of tiktoken encoding to use
         """
+        self.encoding: Any
         try:
             import tiktoken
-            self.encoding: Any = tiktoken.get_encoding(tokenizer_name)
+            self.encoding = tiktoken.get_encoding(tokenizer_name)
         except ImportError:
             # Fallback to simple whitespace tokenization
-            self.encoding: Any = None
+            self.encoding = None
 
     def count_tokens(self, text: str) -> int:
         """Count tokens in text.
@@ -162,7 +163,8 @@ class TokenCounter:
             if len(tokens) <= max_tokens:
                 return text
             truncated_tokens = tokens[:max_tokens]
-            return self.encoding.decode(truncated_tokens)
+            decoded: str = self.encoding.decode(truncated_tokens)
+            return decoded
         else:
             # Simple fallback
             words = text.split()
