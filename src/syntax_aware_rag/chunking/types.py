@@ -82,7 +82,7 @@ class ChunkerConfig:
     """
     max_tokens: int = 512
     max_chars: int | None = None
-    overlap: int = 50
+    overlap: int = 0
     language: str = "en"
     preserve_sentences: bool = True
     normalize_whitespace: bool = True

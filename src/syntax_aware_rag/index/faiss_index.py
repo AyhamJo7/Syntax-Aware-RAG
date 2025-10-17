@@ -32,13 +32,13 @@ class FAISSIndex:
         self.dimension = dimension
         self.metric = metric
         self.use_gpu = use_gpu
-        self._index = None
+        self._index: Any = None
         self._metadata: list[dict[str, Any]] = []
         self._node_map: dict[int, str] = {}  # index_id -> node_id
         self._doc_trees: dict[str, DocumentTree] = {}  # doc_id -> tree
 
     @property
-    def index(self):
+    def index(self) -> Any:
         """Lazy initialize FAISS index."""
         if self._index is None and self.dimension:
             self._initialize_index()

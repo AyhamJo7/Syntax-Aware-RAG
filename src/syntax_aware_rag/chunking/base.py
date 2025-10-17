@@ -3,6 +3,7 @@
 import re
 import unicodedata
 from abc import ABC, abstractmethod
+from typing import Any
 
 from .types import Chunk, ChunkerConfig, DocumentMetadata
 
@@ -91,7 +92,7 @@ class BaseChunker(ABC):
         start: int,
         end: int,
         metadata: DocumentMetadata | None = None,
-        **kwargs
+        **kwargs: Any
     ) -> Chunk:
         """Create a chunk with metadata.
 
@@ -126,10 +127,10 @@ class TokenCounter:
         """
         try:
             import tiktoken
-            self.encoding = tiktoken.get_encoding(tokenizer_name)
+            self.encoding: Any = tiktoken.get_encoding(tokenizer_name)
         except ImportError:
             # Fallback to simple whitespace tokenization
-            self.encoding = None
+            self.encoding: Any = None
 
     def count_tokens(self, text: str) -> int:
         """Count tokens in text.

@@ -101,7 +101,7 @@ class LayoutAwareChunker(BaseChunker):
             List of element groups
         """
         groups = []
-        current_group = []
+        current_group: list[dict[str, Any]] = []
         current_tokens = 0
 
         for elem in elements:
@@ -296,7 +296,7 @@ class LayoutAwareChunker(BaseChunker):
         paragraphs = text.split("\n\n")
 
         chunks = []
-        current_para = []
+        current_para: list[str] = []
         current_tokens = 0
         pos = 0
 

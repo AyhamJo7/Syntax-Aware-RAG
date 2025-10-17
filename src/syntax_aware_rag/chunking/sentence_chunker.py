@@ -1,6 +1,7 @@
 """Sentence-based chunker using spaCy."""
 
 import logging
+from typing import Any
 
 from .base import BaseChunker, TokenCounter
 from .types import Chunk, ChunkerConfig, ChunkType, DocumentMetadata
@@ -29,10 +30,10 @@ class SentenceChunker(BaseChunker):
         super().__init__(config)
         self.token_counter = TokenCounter()
         self.use_spacy = use_spacy
-        self._nlp = None
+        self._nlp: Any = None
 
     @property
-    def nlp(self):
+    def nlp(self) -> Any:
         """Lazy load spaCy model."""
         if self._nlp is None and self.use_spacy:
             try:
@@ -148,7 +149,7 @@ class SentenceChunker(BaseChunker):
             return []
 
         chunks = []
-        current_sentences = []
+        current_sentences: list[str] = []
         current_tokens = 0
         chunk_start = 0
 
@@ -206,7 +207,7 @@ class SentenceChunker(BaseChunker):
                 # Handle overlap
                 if self.config.overlap > 0:
                     # Keep last few sentences for overlap
-                    overlap_sentences = []
+                    overlap_sentences: list[str] = []
                     overlap_tokens = 0
                     for s in reversed(current_sentences):
                         s_tokens = self.token_counter.count_tokens(s)

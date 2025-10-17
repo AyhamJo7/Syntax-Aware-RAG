@@ -31,10 +31,10 @@ class HierarchicalEmbedder:
         self.model_name = model_name
         self.batch_size = batch_size
         self.device = device
-        self._model = None
+        self._model: Any = None
 
     @property
-    def model(self):
+    def model(self) -> Any:
         """Lazy load the embedding model."""
         if self._model is None:
             try:

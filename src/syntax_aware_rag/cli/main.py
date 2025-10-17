@@ -3,10 +3,11 @@
 import logging
 import sys
 from pathlib import Path
+from typing import Union
 
 import click
 
-from ..chunking import ChunkerConfig, DocumentMetadata, RecursiveCharacterChunker, SentenceChunker
+from ..chunking import BaseChunker, ChunkerConfig, DocumentMetadata, RecursiveCharacterChunker, SentenceChunker
 from ..context import ContextBuilder
 from ..embedding import HierarchicalEmbedder
 from ..index import FAISSIndex
@@ -21,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 @click.group()
 @click.version_option(version="0.1.0")
-def cli():
+def cli() -> None:
     """Syntax-Aware-RAG CLI - Advanced RAG with hierarchical indexing."""
     pass
 
@@ -32,7 +33,7 @@ def cli():
 @click.option('--chunker', '-c', type=click.Choice(['sentence', 'recursive']), default='sentence', help='Chunker type')
 @click.option('--max-tokens', '-m', type=int, default=512, help='Maximum tokens per chunk')
 @click.option('--model', type=str, default='sentence-transformers/all-MiniLM-L6-v2', help='Embedding model')
-def index(input: str, output: str, chunker: str, max_tokens: int, model: str):
+def index(input: str, output: str, chunker: str, max_tokens: int, model: str) -> None:
     """Build an index from documents."""
     try:
         input_path = Path(input)
@@ -40,6 +41,7 @@ def index(input: str, output: str, chunker: str, max_tokens: int, model: str):
 
         # Initialize components
         config = ChunkerConfig(max_tokens=max_tokens)
+        chunker_obj: BaseChunker
         if chunker == 'sentence':
             chunker_obj = SentenceChunker(config)
         else:
@@ -101,7 +103,7 @@ def index(input: str, output: str, chunker: str, max_tokens: int, model: str):
 @click.option('--query', '-q', required=True, help='Query string')
 @click.option('--top-k', '-k', type=int, default=5, help='Number of results')
 @click.option('--model', type=str, default='sentence-transformers/all-MiniLM-L6-v2', help='Embedding model')
-def retrieve(index_path: str, query: str, top_k: int, model: str):
+def retrieve(index_path: str, query: str, top_k: int, model: str) -> None:
     """Retrieve relevant passages for a query."""
     try:
         # Load index
@@ -141,7 +143,7 @@ def retrieve(index_path: str, query: str, top_k: int, model: str):
 @click.option('--top-k', '-k', type=int, default=5, help='Number of results')
 @click.option('--max-context-tokens', '-m', type=int, default=2048, help='Maximum context tokens')
 @click.option('--model', type=str, default='sentence-transformers/all-MiniLM-L6-v2', help='Embedding model')
-def query(index_path: str, query: str, top_k: int, max_context_tokens: int, model: str):
+def query(index_path: str, query: str, top_k: int, max_context_tokens: int, model: str) -> None:
     """Query the index and build context."""
     try:
         # Load index
@@ -181,11 +183,12 @@ def query(index_path: str, query: str, top_k: int, max_context_tokens: int, mode
 @click.option('--input', '-i', required=True, type=click.Path(exists=True), help='Input file')
 @click.option('--chunker', '-c', type=click.Choice(['sentence', 'recursive']), default='sentence', help='Chunker type')
 @click.option('--max-tokens', '-m', type=int, default=512, help='Maximum tokens per chunk')
-def ingest(input: str, chunker: str, max_tokens: int):
+def ingest(input: str, chunker: str, max_tokens: int) -> None:
     """Ingest and chunk a document (preview)."""
     try:
         # Initialize chunker
         config = ChunkerConfig(max_tokens=max_tokens)
+        chunker_obj: BaseChunker
         if chunker == 'sentence':
             chunker_obj = SentenceChunker(config)
         else:

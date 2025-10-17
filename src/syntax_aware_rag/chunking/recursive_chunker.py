@@ -81,7 +81,7 @@ class RecursiveCharacterChunker(BaseChunker):
             List of merged chunks
         """
         chunks = []
-        current_chunk = []
+        current_chunk: list[str] = []
         current_tokens = 0
 
         for split in splits:
@@ -107,7 +107,7 @@ class RecursiveCharacterChunker(BaseChunker):
                 # Handle overlap
                 if self.config.overlap > 0:
                     # Keep last part for overlap
-                    overlap_chunk = []
+                    overlap_chunk: list[str] = []
                     overlap_tokens = 0
                     for s in reversed(current_chunk):
                         s_tokens = self.token_counter.count_tokens(s)
