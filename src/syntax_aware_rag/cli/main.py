@@ -3,11 +3,16 @@
 import logging
 import sys
 from pathlib import Path
-from typing import Union
 
 import click
 
-from ..chunking import BaseChunker, ChunkerConfig, DocumentMetadata, RecursiveCharacterChunker, SentenceChunker
+from ..chunking import (
+    BaseChunker,
+    ChunkerConfig,
+    DocumentMetadata,
+    RecursiveCharacterChunker,
+    SentenceChunker,
+)
 from ..context import ContextBuilder
 from ..embedding import HierarchicalEmbedder
 from ..index import FAISSIndex
