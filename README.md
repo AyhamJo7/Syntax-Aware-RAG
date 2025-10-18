@@ -1,11 +1,10 @@
 # Syntax-Aware-RAG
-
+[![CI](https://github.com/AyhamJo7/Syntax-Aware-RAG/actions/workflows/ci.yml/badge.svg)](https://github.com/AyhamJo7/Syntax-Aware-RAG/actions/workflows/ci.yml)
 [![Python Version](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
-[![CI](https://github.com/AyhamJo7/Syntax-Aware-RAG/actions/workflows/ci.yml/badge.svg)](https://github.com/AyhamJo7/Syntax-Aware-RAG/actions/workflows/ci.yml)
 
 <p align="center">
-  <img src="src/Syntax-Aware-RAG.png" alt="Syntax-Aware-RAG Architecture" width="600"/>
+  <img src="src/syntax_aware_rag/Syntax-Aware-RAG.png" alt="Syntax-Aware-RAG Logo" width="600"/>
 </p>
 
 Advanced Retrieval-Augmented Generation system with syntax-aware chunking, hierarchical embeddings, and multi-granularity retrieval.
