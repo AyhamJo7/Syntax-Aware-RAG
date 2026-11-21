@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
 
 <p align="center">
-  <img src="src/syntax_aware_rag/Syntax-Aware-RAG.png" alt="Syntax-Aware-RAG Logo" width="600"/>
+  <img src=".github/assets/banner.png" alt="Syntax-Aware-RAG" width="800" />
 </p>
 
 Advanced Retrieval-Augmented Generation system with syntax-aware chunking, hierarchical embeddings, and multi-granularity retrieval.
